@@ -117,13 +117,13 @@
   </div>
   <div class="row" style="width:70%;" >
     <div class="col-xs-4" style="border: 2px solid #ef3f78; border-radius:50%;">
-      <img style="padding:5px; width:50px;" src="/static/cosmetic.png"/>
+      <img style="padding:5px; width:50px;" src="/static/images/cosmetic.png"/>
       <p style="color:white; font-size:17px;">Choose a Model</p>
     </div>
     <div class="col-xs-4" >
     </div>
     <div class="col-xs-4" style="border: 2px solid #ef3f78; border-radius:50%;">
-      <img style="padding:5px; width:50px;" src="/static/cosmetic.png"/>
+      <img style="padding:5px; width:50px;" src="/static/images/cosmetic.png"/>
         <div class="upload-btn-wrapper">
           <p  class="" id="cameraButton" style="color:white; font-size:17px; ">Upload a Photo</p>
           <input type="file" id="fileInput" accept="image/*" capture="user">
@@ -166,6 +166,7 @@ if (window.File && window.FileReader && window.FileList && window.Blob) {
 
   $("#cameraButton1" ).click(function() {
   $("#video").show();
+  $("#cancel").show();
   $("#fileDisplayArea").hide();
   $("#displayContainer").show();
   $("#mainContainer").hide();
