@@ -91,12 +91,16 @@
   width: auto;
   max-width: 100%;
 }
+.video_elem{
+  width: auto;
+  max-width: 100%;
+}
   </style>
 </head>
 <body>
   <div class="container-fluid display-image" id="displayContainer" style="display:none;">
     <img  id="fileDisplayArea" ></img>
-    <video id="video" width="320" height="240" autoplay ></video>
+    <video id="video" class="video_elem" autoplay ></video>
     <!-- <button id="cancel" class="top-right" style="display:none;">cancel</button> -->
     <i id="cancel" class="fa fa-close top-right" style="font-size:48px;"></i>
   </div>
@@ -154,7 +158,6 @@
 <script>
 if (window.File && window.FileReader && window.FileList && window.Blob) {
   $("#cancel" ).click(function() {
-  // stopStreamedVideo();
   $("#displayContainer").hide();
   $("#mainContainer").show();
   $("#cancel").hide();
@@ -187,30 +190,6 @@ if (window.File && window.FileReader && window.FileList && window.Blob) {
   }
   });
 
-  function stopStreamedVideo() {
-    navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: true
-    })
-    .then(stream => {
-      window.localStream = stream;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-// audio.onclick = function() {
-//   localStream.getAudioTracks()[0].stop();
-// }
-cancel.onclick = function() {
-  localStream.getVideoTracks()[0].stop();
-}
-// both.onclick = function() {
-//   localStream.getTracks().forEach((track) => {
-//     track.stop();
-//   })
-// }
-
-  }
 
   document.getElementById('fileInput').addEventListener('change',showThumbNail, false);
   var fileDisplayArea = document.getElementById('fileDisplayArea');
