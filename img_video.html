@@ -154,7 +154,7 @@
 <script>
 if (window.File && window.FileReader && window.FileList && window.Blob) {
   $("#cancel" ).click(function() {
-  stopStreamedVideo();
+  // stopStreamedVideo();
   $("#displayContainer").hide();
   $("#mainContainer").show();
   $("#cancel").hide();
@@ -172,37 +172,58 @@ if (window.File && window.FileReader && window.FileList && window.Blob) {
   $("#displayContainer").show();
   $("#mainContainer").hide();
 
-  var video = document.getElementById('video');
+  // var video = document.getElementById('video');
 
   // Get access to the camera!
   if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       // Not adding `{ audio: true }` since we only want video now
-      navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-          video.src = window.URL.createObjectURL(stream);
-          video.play();
+      // navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+      //     video.src = window.URL.createObjectURL(stream);
+      //     video.play();
+      // });
+      navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true
+      })
+      .then(stream => {
+        window.localStream = stream;
+        document.querySelector('video').src = URL.createObjectURL(stream);
+      })
+      .catch((err) => {
+        console.log(err);
       });
+  cancel.onclick = function() {
+    localStream.getVideoTracks()[0].stop();
   }
+
+  }
+
   });
 
   function stopStreamedVideo() {
-    var MediaStream = window.MediaStream;
+    navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: true
+    })
+    .then(stream => {
+      window.localStream = stream;
+      document.querySelector('video').src = URL.createObjectURL(stream);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+// audio.onclick = function() {
+//   localStream.getAudioTracks()[0].stop();
+// }
+cancel.onclick = function() {
+  localStream.getVideoTracks()[0].stop();
+}
+// both.onclick = function() {
+//   localStream.getTracks().forEach((track) => {
+//     track.stop();
+//   })
+// }
 
-  if (typeof MediaStream === 'undefined' && typeof webkitMediaStream !== 'undefined') {
-      MediaStream = webkitMediaStream;
-  }
-
-  /*global MediaStream:true */
-  if (typeof MediaStream !== 'undefined' && !('stop' in MediaStream.prototype)) {
-      MediaStream.prototype.stop = function() {
-          this.getAudioTracks().forEach(function(track) {
-              track.stop();
-          });
-
-          this.getVideoTracks().forEach(function(track) {
-              track.stop();
-          });
-      };
-  }
   }
 
   document.getElementById('fileInput').addEventListener('change',showThumbNail, false);
