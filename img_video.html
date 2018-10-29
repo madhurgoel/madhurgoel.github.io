@@ -154,6 +154,7 @@
 <script>
 if (window.File && window.FileReader && window.FileList && window.Blob) {
   $("#cancel" ).click(function() {
+  stopStreamedVideo();
   $("#displayContainer").hide();
   $("#mainContainer").show();
   $("#cancel").hide();
@@ -170,8 +171,30 @@ if (window.File && window.FileReader && window.FileList && window.Blob) {
   $("#fileDisplayArea").hide();
   $("#displayContainer").show();
   $("#mainContainer").hide();
+
+  var video = document.getElementById('video');
+
+  // Get access to the camera!
+  if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      // Not adding `{ audio: true }` since we only want video now
+      navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+          video.src = window.URL.createObjectURL(stream);
+          video.play();
+      });
+  }
   });
 
+  function stopStreamedVideo() {
+    var videoElem = document.getElementById('video');
+    let stream = videoElem.srcObject;
+    let tracks = stream.getTracks();
+
+    tracks.forEach(function(track) {
+      track.stop();
+    });
+
+    videoElem.srcObject = null;
+  }
 
   document.getElementById('fileInput').addEventListener('change',showThumbNail, false);
   var fileDisplayArea = document.getElementById('fileDisplayArea');
@@ -208,16 +231,6 @@ if (window.File && window.FileReader && window.FileList && window.Blob) {
           $('#cancel').show();
 }
 
-var video = document.getElementById('video');
-
-// Get access to the camera!
-if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    // Not adding `{ audio: true }` since we only want video now
-    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-        video.src = window.URL.createObjectURL(stream);
-        video.play();
-    });
-}
 
 } else {
   alert('The File APIs are not fully supported in this browser.');
