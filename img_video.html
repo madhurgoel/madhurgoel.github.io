@@ -185,15 +185,24 @@ if (window.File && window.FileReader && window.FileList && window.Blob) {
   });
 
   function stopStreamedVideo() {
-    var videoElem = document.getElementById('video');
-    let stream = videoElem.srcObject;
-    let tracks = stream.getTracks();
+    var MediaStream = window.MediaStream;
 
-    tracks.forEach(function(track) {
-      track.stop();
-    });
+  if (typeof MediaStream === 'undefined' && typeof webkitMediaStream !== 'undefined') {
+      MediaStream = webkitMediaStream;
+  }
 
-    videoElem.srcObject = null;
+  /*global MediaStream:true */
+  if (typeof MediaStream !== 'undefined' && !('stop' in MediaStream.prototype)) {
+      MediaStream.prototype.stop = function() {
+          this.getAudioTracks().forEach(function(track) {
+              track.stop();
+          });
+
+          this.getVideoTracks().forEach(function(track) {
+              track.stop();
+          });
+      };
+  }
   }
 
   document.getElementById('fileInput').addEventListener('change',showThumbNail, false);
