@@ -177,7 +177,7 @@ if (window.File && window.FileReader && window.FileList && window.Blob) {
   $("#mainContainer").hide();
 
   var video = document.getElementById('video');
-var imageCapture
+
   // Get access to the camera!
   if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       // Not adding `{ audio: true }` since we only want video now
@@ -187,32 +187,8 @@ var imageCapture
           cancel.onclick = function() {
             stream.getVideoTracks()[0].stop();
           }
-          let mediaStreamTrack = stream.getVideoTracks()[0];
-        imageCapture = new ImageCapture(mediaStreamTrack);
-        takePhoto(imageCapture);
       });
   }
-
-  function error(error)
-{
-    console.error('error:', error);
-}
-
-function takePhoto(imageCapture)
-
-{
-console.log(imageCapture);
-    const img =  document.getElementById('im');
-
-    imageCapture.takePhoto()
-    .then(blob => {
-        let url = window.URL.createObjectURL(blob);
-        img.src = url;
-        window.URL.revokeObjectURL(url);
-    })
-    .catch(error);
-};
-
   });
 
 
