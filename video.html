@@ -81,7 +81,7 @@
 		<script src="/static/src/dat.gui.min.js"></script>
 		<script src="/static/src/jquery.min.js"></script>
 		<script src="/static/src/clmtrackr.no_model.js"></script>
-		<script src="/static/src/models/model_pca_20_svm.js"></script>
+		<!-- <script src="/static/src/models/model_pca_20_svm.js"></script> -->
 		<!-- <script src="/static/src/clmtrackr.js"></script> -->
 		<!-- <script src="/static/src/Stats.js"></script> -->
 		<div id="content">
@@ -94,18 +94,35 @@
 			<br/>
 			<input class="btn" type="button" value="wait, loading video" disabled="disabled" onclick="startVideo()" id="startbutton"></input>
 			<script>
+				var ctrack = new clm.tracker();
 				var vid = document.getElementById('videoel');
 				var vid_width = vid.width;
 				var vid_height = vid.height;
 				var overlay = document.getElementById('overlay');
 				var overlayCC = overlay.getContext('2d');
-
+				var screenshot;
+				// var dynamicModelURL = "http://localhost:5000/get_model";
+				var dynamicModelURL = "http://aion.tangent.ai/get_model";
 				/*********** Setup of video/webcam and checking for webGL support *********/
+				function get_model(img_data){
+					$.ajax({url: dynamicModelURL,
+				          type: 'POST',
+				          data: {filename: "data", data: img_data},
+				          success: function(data, status, xhr) {
+				          	eval(data);
+							ctrack.init(this.pModel);
+							startbutton.value = "start";
+							startbutton.disabled = null;
+				          }
+				    });
+				}
 
 				function enablestart() {
 					var startbutton = document.getElementById('startbutton');
-					startbutton.value = "start";
-					startbutton.disabled = null;
+					startbutton.value = "initializing";
+					overlayCC.drawImage(vid, 0, 0, overlay.width, overlay.height);
+					screenshot = overlay.toDataURL('image/png');
+					get_model(screenshot);
 				}
 
 				var insertAltVideo = function(video) {
@@ -180,8 +197,6 @@
 
 				/*********** Code for face tracking *********/
 
-				var ctrack = new clm.tracker();
-				ctrack.init(pModel);
 				var trackingStarted = false
 				var currentPos;
 				var UpperlipUpperPts = [44,45,46,47,48,49,50]
